@@ -1,23 +1,31 @@
-// membuat route get pertama
+// menerima body json (post request)
 package main
 
 import "github.com/gin-gonic/gin"
 
+type UserInput struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+}
+
 func main() {
 	r := gin.Default()
 
-	// ini route GET pertama kita
-	r.GET("/hello", func(c *gin.Context) {
-		c.String(200, "hello dari gin!")
-	})
+	r.POST("/user", func(c *gin.Context) {
+		var input UserInput
 
-	// versi json
-	r.GET("/json", func(c *gin.Context) {
+		// baca JSON dari body ke variabel input
+		if err := c.BindJSON(&input); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		// kalau sukses
 		c.JSON(200, gin.H{
-			"message": "halo dunia JSON",
-			"success": true,
+			"message": "data diterima!",
+			"data":    input,
 		})
 	})
 
-	r.Run() // port 8080
+	r.Run()
 }
