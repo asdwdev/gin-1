@@ -1,4 +1,6 @@
-// latihan bagian 2
+// 📌 Bagian 3 — Query Parameter
+// (Contoh: /search?q=golang)
+
 package main
 
 import "github.com/gin-gonic/gin"
@@ -6,23 +8,32 @@ import "github.com/gin-gonic/gin"
 func main() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "hello world!",
-		})
-	})
+	// 1️⃣ Apa itu Query Param?
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	// Format:
 
-	r.POST("/login", func(c *gin.Context) {
+	// /endpoint?key=value
+
+	// Contoh:
+
+	// /hello?nama=nil
+
+	// Cara ambilnya:
+
+	// nama := c.Query("nama")
+
+	// Jika tidak ada query param:
+
+	// c.DefaultQuery("nama", "guest")
+
+	r.GET("/hello", func(c *gin.Context) {
+		// nama := c.Query("nama")
+		nama := c.DefaultQuery("nama", "nil")
 		c.JSON(200, gin.H{
-			"status": "login berhasil",
+			"halo": nama,
 		})
 	})
 
 	r.Run()
+
 }
