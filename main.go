@@ -3,16 +3,12 @@ package main
 import "github.com/gin-gonic/gin"
 
 func main() {
-	// bikin router gin
 	r := gin.Default()
-
-	// route GET di path "/"
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "hello gin!",
+			"message": "hello world dari gin",
 		})
 	})
 
-	// jalankan server di port 8080
-	r.Run() // default :8008
+	r.Run() // default: localhost:8080
 }
