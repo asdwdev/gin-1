@@ -31,25 +31,28 @@ package main
 
 import "github.com/gin-gonic/gin"
 
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+type RegisterRequest struct {
+	Nama  string `json:"nama"`
+	Email string `json:"email"`
 }
 
 func main() {
 	r := gin.Default()
 
-	r.POST("/login", func(c *gin.Context) {
-		var req LoginRequest
+	r.POST("/register", func(c *gin.Context) {
+		var req RegisterRequest
 
 		if err := c.BindJSON(&req); err != nil {
-			c.JSON(400, gin.H{"error": "body tidak valid"})
+			c.JSON(400, gin.H{"error": "body tidak valid valid"})
 			return
 		}
 
 		c.JSON(200, gin.H{
-			"username": req.Username,
-			"status":   "login oke",
+			"pesan": "register berhasil",
+			"data": gin.H{
+				"nama":  req.Nama,
+				"email": req.Email,
+			},
 		})
 	})
 
