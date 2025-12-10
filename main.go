@@ -1,39 +1,28 @@
-// ⭐ Bagian 7 — Middleware (Dasar & Latihan)
-// 1️⃣ Apa itu Middleware?
-
-// Middleware = fungsi yang dijalankan Sebelum dan/atau Setelah handler endpoint.
-
-// request → middleware → handler → middleware → response
-
-// func MyMiddleware(c *gin.Context) {
-//     // sebelum handler
-//     ...
-//     c.Next() // lanjut ke handler
-
-//	    // setelah handler
-//	    ...
-//	}
+// 3️⃣ Contoh Middleware Auth Paling Dasar
 package main
 
-import (
-	"fmt"
+import "github.com/gin-gonic/gin"
 
-	"github.com/gin-gonic/gin"
-)
-
-func LogRequest() gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("ada request masuk:", c.Request.URL.Path)
+		token := c.GetHeader("Authorization")
+		if token != "secret123" {
+			c.JSON(401, gin.H{"error": "unauhorized"})
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }
 
 func main() {
 	r := gin.Default()
-	r.Use(LogRequest())
 
-	r.GET("ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "pong"})
+	private := r.Group("/private")
+	private.Use(AuthMiddleware())
+
+	private.GET("/dashboard", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "selamat datang"})
 	})
 
 	r.Run()
