@@ -1,29 +1,39 @@
-// latihan 6
+// ⭐ Bagian 7 — Middleware (Dasar & Latihan)
+// 1️⃣ Apa itu Middleware?
+
+// Middleware = fungsi yang dijalankan Sebelum dan/atau Setelah handler endpoint.
+
+// request → middleware → handler → middleware → response
+
+// func MyMiddleware(c *gin.Context) {
+//     // sebelum handler
+//     ...
+//     c.Next() // lanjut ke handler
+
+//	    // setelah handler
+//	    ...
+//	}
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
 
-type ProductRequest struct {
-	Nama  string `json:"nama" binding:"required"`
-	Stok  int    `json:"stok" binding:"required,min=1"`
-	Harga int    `json:"harga" binding:"required,min=1000"`
+	"github.com/gin-gonic/gin"
+)
+
+func LogRequest() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("ada request masuk:", c.Request.URL.Path)
+		c.Next()
+	}
 }
 
 func main() {
 	r := gin.Default()
+	r.Use(LogRequest())
 
-	r.POST("/produk/tambah", func(c *gin.Context) {
-		var req ProductRequest
-
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(200, gin.H{
-			"pesan": "produk ditambahkan",
-			"data":  req,
-		})
+	r.GET("ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
 	})
 
 	r.Run()
